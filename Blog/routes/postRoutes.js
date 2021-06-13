@@ -24,7 +24,7 @@ router.post('/create', (req,res) => {
     }); 
 
     newPost.save()
-    .then(() => res.json('New post created and saved!'))
+    .then(() => res.json('New post has been created!'))
     .catch(err => res.status(400).json(`Error: ${err}`));
 
 });
@@ -32,7 +32,7 @@ router.post('/create', (req,res) => {
 
 
 // find by id
-router.get('/:id', (req,res) => {
+router.get('/posts/:id', (req,res) => {
     Post.findById(req.params.id)
     .then(post => res.json(post))
     .catch(err => res.status(400).json(`Error: ${err}`));
@@ -41,7 +41,7 @@ router.get('/:id', (req,res) => {
 
 
 // update
-router.put('/update/:id', (req,res) => {
+router.put('/posts/update/:id', (req,res) => {
     Post.findById(req.params.id)
     .then(post => {
         post.title = req.body.title;
@@ -65,5 +65,12 @@ router.delete('/:id', (req,res) => {
 });
 
 
+
+// search post function
+router.get('/posts/search/:value', (req,res) => {
+    Post.find({})
+    .then()
+    .catch();
+});
 
 module.exports = router;

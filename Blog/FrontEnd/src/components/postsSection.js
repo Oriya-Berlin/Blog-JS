@@ -20,7 +20,7 @@ const PostSection = () => {
     
         <div>
             {
-                posts.map( (post) => ( <Post post={post}/> ) )
+                posts.map( (post,key) => ( <Post post={post} key={key}/> ) )
             }          
         </div>
     )

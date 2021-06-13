@@ -1,30 +1,44 @@
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import React, {useEffect, useState} from 'react';
 import SuccessMessage from './successMessage';
+import axios from 'axios';
 
 
 
-const CreatePost = () => {
+
+const EditPost = (props) => {
 
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [content, setContent] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    
-    // useEffect(() => setSuccessMessage(<Navbar></Navbar>)); // TODO: handle msg
 
-    const sendData = e =>{
+
+
+    useEffect(() =>{
+
+        axios.get(`/posts/${props.match.params.id}`)
+        .then(res => [
+            setTitle(res.data.title),
+            setAuthor(res.data.author),
+            setContent(res.data.content)
+        ])
+        .catch(err => console.log(err))
+    }, []); //  ??? [] props
+
+
+
+    const updateData = (e) =>{
 
         e.preventDefault();
 
-        const newPost = {
+        const updatedPost = {
             title,
             author,
             content
         };
 
 
-        axios.post('/create',newPost)
+        axios.put(`/posts/update/${props.match.params.id}`,updatedPost)
         .then(res => setSuccessMessage(<SuccessMessage msg={res.data}/>))
         .catch(err => console.log(err));
         
@@ -32,25 +46,22 @@ const CreatePost = () => {
         setTitle('');
         setAuthor('');
         setContent('');
-
     }
 
 
-    // Style
-    const style = {
-        margin: "3rem auto",
-        padding: "4rem",
-        width: "32rem",
-    }
- 
-    
+        // Style
+        const style = {
+            margin: "3rem auto",
+            padding: "4rem",
+            width: "32rem",
+        }
 
 
     return(
 
-    <div className="container bg-light" style={style}>
-        <h1>Create new post</h1>
-        <form onSubmit={sendData} encType="multipart/form-data">
+        <div className="container bg-light" style={style}>
+                   <h1>Edit post</h1>
+        <form onSubmit={updateData} encType="multipart/form-data">
 
         <div className="mb-3">
         <label  className="form-label">Author:</label>
@@ -68,23 +79,20 @@ const CreatePost = () => {
         </div>
 
         <div class="col-12">
-        <button type="submit" className="btn btn-primary">Submit</button>
+        <button type="submit" className="btn btn-primary">Update</button>
         </div>
 
         </form>
 
         <br/>
 
-        
-             {successMessage}
-        
+        {successMessage}
 
-    </div>
+        </div>
     )
 
 }
 
-export default CreatePost;
 
 
 
@@ -93,8 +101,5 @@ export default CreatePost;
 
 
 
-
-
-
-
+export default EditPost;
 
