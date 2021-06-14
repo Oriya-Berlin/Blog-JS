@@ -67,10 +67,14 @@ router.delete('/:id', (req,res) => {
 
 
 // search post function
-router.get('/posts/search/:value', (req,res) => {
-    Post.find({})
-    .then()
-    .catch();
+router.get('/posts/search/:value', async (req,res) => {
+
+     await Post.find({author:req.params.value})
+    .then(post => res.json(post))
+    .catch(err => res.status(400).json(`Error: ${err}`));
+
 });
+
+
 
 module.exports = router;
