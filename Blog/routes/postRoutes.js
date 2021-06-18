@@ -5,10 +5,10 @@ const Post = require('../models/post');
 
 
 // get all
-router.get('/posts',(req, res) => {
+router.get('/posts',async (req, res) => {
 
-    Post.find({})
-    .then( post => res.json(post))
+    await Post.find({})
+    .then( posts => res.json(posts))
     .catch(err => res.status(400).json(`Error: ${err}`))
 });
 
@@ -20,7 +20,8 @@ router.post('/create', (req,res) => {
     const newPost = new Post({
         title: req.body.title,
         author: req.body.author,
-        content: req.body.content
+        content: req.body.content,
+        date: new Date()
     }); 
 
     newPost.save()
@@ -32,8 +33,9 @@ router.post('/create', (req,res) => {
 
 
 // find by id
-router.get('/posts/:id', (req,res) => {
-    Post.findById(req.params.id)
+router.get('/posts/:id', async (req,res) => {
+
+    await Post.findById(req.params.id)
     .then(post => res.json(post))
     .catch(err => res.status(400).json(`Error: ${err}`));
 });
@@ -41,8 +43,9 @@ router.get('/posts/:id', (req,res) => {
 
 
 // update
-router.put('/posts/update/:id', (req,res) => {
-    Post.findById(req.params.id)
+router.put('/posts/update/:id', async (req,res) => {
+
+    await Post.findById(req.params.id)
     .then(post => {
         post.title = req.body.title;
         post.author = req.body.author;
@@ -58,8 +61,9 @@ router.put('/posts/update/:id', (req,res) => {
 
 
 // delete
-router.delete('/:id', (req,res) => {
-    Post.findByIdAndDelete(req.params.id)
+router.delete('/:id', async (req,res) => {
+
+    await Post.findByIdAndDelete(req.params.id)
     .then( () => res.json('Post has been deleted!'))
     .catch(err => res.status(400).json(`Error: ${err}`));
 });
@@ -69,7 +73,8 @@ router.delete('/:id', (req,res) => {
 // search post function
 router.get('/posts/search/:value', async (req,res) => {
 
-     await Post.find({author:req.params.value})
+    //  await Post.find({author:req.params.value})
+     await Post.find({author: new RegExp(req.params.value)})
     .then(post => res.json(post))
     .catch(err => res.status(400).json(`Error: ${err}`));
 

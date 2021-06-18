@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import SuccessMessage from './successMessage';
 
@@ -11,9 +11,8 @@ const CreatePost = () => {
     const [content, setContent] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     
-    // useEffect(() => setSuccessMessage(<Navbar></Navbar>)); // TODO: handle msg
 
-    const sendData = e =>{
+    const sendData = e => {
 
         e.preventDefault();
 
@@ -84,17 +83,5 @@ const CreatePost = () => {
 
 }
 
+
 export default CreatePost;
-
-
-
-
-
-
-
-
-
-
-
-
-

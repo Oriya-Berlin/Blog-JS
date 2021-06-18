@@ -23,7 +23,7 @@ const EditPost = (props) => {
             setContent(res.data.content)
         ])
         .catch(err => console.log(err))
-    }, []); //  ??? [] props
+    }); //  ??? [] props
 
 
 

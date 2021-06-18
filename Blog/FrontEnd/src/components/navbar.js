@@ -1,29 +1,24 @@
 import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
-import Post from './post';
 
 
 
 const Navbar = () => {
 
   const [userValue, setUserValue] = useState(''); 
-  const [data, setData] = useState([]); 
-
-  // const onTextChange = (userValue) => {
-  //   setValue(userValue);
-  // }
+  
+  
+  // const [data, setData] = useState([]); 
 
 
-    const search = () =>{
 
-      console.log('1');
-      axios.get(`/posts/search/${userValue}`)
-      .then(res => setData(res.data))
-      .catch(err => console.log(err));
+  //   const search = () =>{
 
-      // console.log(data);
-    }
+  //     axios.get(`/posts/search/${userValue}`)
+  //     .then(res => setData(res.data))
+  //     .catch(err => console.log(err));
+
+  //   }
 
 
     return (
@@ -47,12 +42,16 @@ const Navbar = () => {
               <Link className="nav-link" to="/create">Create Post</Link>
             </li>
      
+            <li className="nav-item">
+              <Link className="nav-link" to="/about">About</Link>
+            </li>
 
           </ul>
 
           <form className="d-flex" >
             <input value={userValue} className="form-control me-2" onChange={e => setUserValue(e.target.value)} type="search" placeholder="Search" aria-label="Search"/>
-            <button onClick={search()} className="btn btn-outline-light" type="submit">Search</button>
+            <Link className="btn btn-outline-light" to={`/posts/search/${userValue}`}>Search</Link>
+            {/* <button onClick={search()} className="btn btn-outline-light" type="submit">Search</button> */}
           </form>
 
         </div>
@@ -64,11 +63,16 @@ const Navbar = () => {
 
 
 
-        <div>
+
+
+
+        {/* <Search data={data}/> */}
+
+        {/* <div>
             {
                 data.map( (post,key) => ( <Post post={post} key={key}/> ) )
             }          
-        </div>
+        </div> */}
 
 
 

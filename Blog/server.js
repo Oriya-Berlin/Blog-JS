@@ -21,11 +21,16 @@ mongoose.connect(URL, {
 const connection = mongoose.connection;
 
 connection.once('open', () => console.log('Server / DB Connected! '));
+
+
 // ------------------------------------------------------------------------ //
 
-const postsRouter = require('./routes/postRoutes')
-server.use('/', postsRouter)
 
+const postsRouter = require('./routes/postRoutes')
+const userRouter = require('./routes/userRoutes');
+
+server.use('/', postsRouter);
+server.use('/', userRouter);
 
 
 // ------------------------------------------------------------------------ //
