@@ -1,24 +1,59 @@
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import React, {useState, useEffect, useContext} from 'react';
+import {Link, useHistory} from 'react-router-dom';
+import axios from 'axios';
+import UserAuth from './../context/auth-context';
+import Post from './post'
 
 
 
-const Navbar = () => {
+const Navbar =  () => {
 
-  const [userValue, setUserValue] = useState(''); 
-  
-  
-  // const [data, setData] = useState([]); 
-
+  const history = useHistory();
+  const {userCredentials, setUserCredentials} = useContext(UserAuth);
+  const [searchInput, setSearchInput] = useState(''); 
 
 
-  //   const search = () =>{
 
-  //     axios.get(`/posts/search/${userValue}`)
-  //     .then(res => setData(res.data))
-  //     .catch(err => console.log(err));
+  useEffect( () => {
+       
+    if(localStorage.getItem('userCredentials'))
+      setUserCredentials(JSON.parse(localStorage.getItem('userCredentials')));
+    
+  },[]);
 
-  //   }
+
+  const logout = () => {
+
+    setUserCredentials({
+      user_id: null,
+      username: null,
+      email: null,
+      token: null,
+      isAuth: false
+    });
+
+    // TODO: handle that, afte user token expired, we need to remove
+    // 'userCredentials' from localStorage
+    localStorage.removeItem('userCredentials');
+    history.push('/user/login');
+  }
+
+
+
+
+
+  // TODO: change that name to result
+  const [data, setData] = useState([]); 
+
+
+
+    const search = () =>{
+
+      axios.get(`/posts/search/${searchInput}`)
+      .then(res => setData(res.data))
+      .catch(err => console.log(err));
+
+    }
 
 
     return (
@@ -36,10 +71,30 @@ const Navbar = () => {
             <li className="nav-item">
               <Link className="nav-link" aria-current="page" to="/posts">Home</Link>
             </li>
+      
+            {
+              userCredentials.token ? 
+              <>
+                <li className="nav-item">
+                <Link className="nav-link" to={`/user/profile/${userCredentials.user_id}`}>Hi, {userCredentials.username}</Link>
+                </li>
 
+                <li className="nav-item">
+                <Link className="nav-link" to={`/user/profile/${userCredentials.user_id}`}>My Profile</Link>
+                </li>
+
+                <li className="nav-item" onClick={(e) => logout()}>
+                <div className="nav-link">Log-out</div>
+                </li>
+              </>
+            :
+              <li className="nav-item">
+              <Link className="nav-link" to="/user/login">Login</Link>
+              </li>
+            }
 
             <li className="nav-item">
-              <Link className="nav-link" to="/create">Create Post</Link>
+              <Link className="nav-link" to="/posts/create/new">Create Post</Link>
             </li>
      
             <li className="nav-item">
@@ -49,9 +104,9 @@ const Navbar = () => {
           </ul>
 
           <form className="d-flex" >
-            <input value={userValue} className="form-control me-2" onChange={e => setUserValue(e.target.value)} type="search" placeholder="Search" aria-label="Search"/>
-            <Link className="btn btn-outline-light" to={`/posts/search/${userValue}`}>Search</Link>
-            {/* <button onClick={search()} className="btn btn-outline-light" type="submit">Search</button> */}
+            <input value={searchInput} className="form-control me-2" onChange={e => setSearchInput(e.target.value)} type="search" placeholder="Search" aria-label="Search"/>
+            {/* <Link  onSubmit={search()} type="submit" className="btn btn-outline-light" to={`/posts/search/${searchInput}`}>Search</Link> */}
+            <button onClick={search()} className="btn btn-outline-light" type="submit">Search</button>
           </form>
 
         </div>
@@ -59,20 +114,15 @@ const Navbar = () => {
     </nav>
 
         {/* here we put the results */}
-        {/* we nee to try put search functon on button tag */}
-
-
-
-
 
 
         {/* <Search data={data}/> */}
 
-        {/* <div>
+        <div>
             {
                 data.map( (post,key) => ( <Post post={post} key={key}/> ) )
             }          
-        </div> */}
+        </div>
 
 
 

@@ -34,7 +34,7 @@ const SinglePostPage = (props) => {
     <div style={style}>
         <h1>{title}</h1>
         <h6>{content}</h6>
-        <h6><span class="badge bg-secondary">{author}</span></h6>
+        <h6><span className="badge bg-secondary">{author}</span></h6>
         <Link to='/posts' className='btn btn-primary'>Back </Link>
         <Link to={`/posts/update/${props.match.params.id}`} className='btn btn-primary'>Edit </Link>
     </div>

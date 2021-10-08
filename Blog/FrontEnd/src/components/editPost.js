@@ -8,22 +8,25 @@ import axios from 'axios';
 const EditPost = (props) => {
 
     const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState('');
+    const [author, setAuthor] = useState(''); //
     const [content, setContent] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
-
+    // ####################################################
+        // TODO: this component Should be in user profile page
+        // TODO: need to edit all this page
+    // ####################################################
 
     useEffect(() =>{
 
         axios.get(`/posts/${props.match.params.id}`)
         .then(res => [
             setTitle(res.data.title),
-            setAuthor(res.data.author),
+            setAuthor(res.data.author), //
             setContent(res.data.content)
         ])
         .catch(err => console.log(err))
-    }); //  ??? [] props
+    }, ); // []
 
 
 
@@ -33,7 +36,7 @@ const EditPost = (props) => {
 
         const updatedPost = {
             title,
-            author,
+            author, //
             content
         };
 
@@ -44,7 +47,7 @@ const EditPost = (props) => {
         
         // Clear the fields
         setTitle('');
-        setAuthor('');
+        setAuthor(''); //
         setContent('');
     }
 
@@ -60,13 +63,15 @@ const EditPost = (props) => {
     return(
 
         <div className="container bg-light" style={style}>
+
                    <h1>Edit post</h1>
+
         <form onSubmit={updateData} encType="multipart/form-data">
 
-        <div className="mb-3">
-        <label  className="form-label">Author:</label>
+        {/* <div className="mb-3">
+        <label  className="form-label">Author:</label> 
         <input type="text" value ={author} onChange={e => setAuthor(e.target.value)} className="form-control"/>
-        </div>
+        </div> */}
 
         <div className="mb-3">
         <label  className="form-label">Title:</label>
