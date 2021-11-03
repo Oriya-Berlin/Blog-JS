@@ -1,57 +1,57 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import CardHeader from "@mui/material/CardHeader";
+import Avatar from "@mui/material/Avatar";
+import { red } from "@mui/material/colors";
 
+const Post = ({ post }) => {
 
-const Post = ({post}) => {
+  const date = new Date(post.date);
 
+  return (
+    <Grid item key={post.post_id} xs={12} sm={12} md={12}> {/* xs = mobile,sm = tablet, md = pc */}
+      <CssBaseline />
+      <Card>
+        <CardHeader
+          avatar={
+            <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+              A
+            </Avatar>
+          }
+          title={post.title}
+          subheader={date}
+        />
 
-    const date = new Date(post.date);
+        <CardMedia
+          image="https://bootdey.com/img/Content/avatar/avatar7.png"
+          title="random image"
+        />
+        <CardContent>
+          <Typography gutterBottom>{post.author_username}</Typography>
 
-
-     // Style
-     const style = {
-      margin: "3rem auto",
-      width: "60rem",
-    }
-    const align_left = {
-        'textAlign': 'left'
-    }
-    const align_right = {
-      'textAlign': 'right'
-    } 
-
-    return(
-      
-          <div className="container" style={style}>
-
-                <div className="card" key={post.post_id}>
-
-                    <div className="card-header" >
-                        <div className="row">
-                            <div className="col-sm-3" style={align_left}>
-                                <img alt="" src="https://bootdey.com/img/Content/avatar/avatar7.png"  className="rounded-circle" width="40"/>
-                                {/* <Link to={`/user/profile/${post.author._id}`}> */}
-                                    <span className="badge bg-secondary p-2 col-sm-6"> {post.author_username}</span>
-                                {/* </Link> */}
-                            </div>
-                            <div className="col-sm-9" style={align_right}>       
-                                {date}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="card-body">
-                      <h5 className="card-title">{post.title}</h5>
-                      <p className="card-text">{post.content}</p>
-                      <Link className="btn btn-info" to={`/posts/${post._id}`}>Read</Link>
-                    </div>
-
-                </div>
-          </div>
-
-    )
-}
-
+          <Typography>{post.content}</Typography>
+        </CardContent>
+        <CardActions>
+          <Button size="small" color="primary">
+            {/* <Link className="btn btn-info" to={`/posts/${post._id}`}>Read</Link> */}
+            Read
+          </Button>
+          <Button size="small" color="success">
+            Buy
+          </Button>
+        </CardActions>
+      </Card>
+    </Grid>
+  );
+};
 
 export default Post;

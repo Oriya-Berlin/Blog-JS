@@ -11,6 +11,8 @@ module.exports = function (req, res, next)  {
 
     if(!token){
         req.isAuth = false;
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+
         return res.status(401).send('Access Denied!');
     }
     try {
@@ -18,6 +20,8 @@ module.exports = function (req, res, next)  {
         const verifiedUser = jwt.verify(token, process.env.TOKEN);
         req.user = verifiedUser;
         req.isAuth = true;
+        console.log(verifiedUser)
+        console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
         next();
 
     } catch (error) {

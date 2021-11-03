@@ -16,7 +16,7 @@ router.get('/posts' , async (req, res) => {
 
 
 // create new post (******)
-router.post('/posts/create', (req,res) => {
+router.post('/posts/create', authenticationNeeded, (req,res) => {
 
     const newPost = new Post({
         title: req.body.title,
@@ -45,7 +45,7 @@ router.get('/posts/:id', async (req,res) => {
 
 
 // update post by id
-// TODO: check thar route after i change her
+// TODO: check that route after i change her
 router.put('/posts/update/:id', async (req,res) => {
 
     await Post.findById(req.params.id)

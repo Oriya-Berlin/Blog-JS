@@ -1,43 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import Post from './post';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import Post from "./post";
+import axios from "axios";
+
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import Container from "@mui/material/Container";
 
 
 
-const PostSection = (props) => {  
+const PostSection = (props) => {
 
-    const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]);
 
-    useEffect(() => {
+  useEffect(() => {
+    axios
+      .get("/posts", {
+        headers: { "auth-token": localStorage.getItem("token") },
+      })
+      .then((res) => setPosts(res.data))
+      .catch((err) => console.log(err));
+  }, []);
 
-        axios.get('/posts',{headers:{'auth-token': localStorage.getItem('token'),},})
-        .then(res => setPosts(res.data))
-        .catch(err => console.log(err));
-    },[]);
 
-
-    const style ={
-        margin: "3rem auto",
-        background: "#98bbc1",
-        width: "15rem",
-        padding: "10px",
-        borderRadius: "10px",
-    }
-
-   
-    return(
-    
-        <div>
-            <div style={style}>
-                <h1> Posts </h1>
-            </div>
-
-            {
-                posts.map( (post,key) => ( <Post post={post} /> ) )
-            }          
-        </div>
-    )
-}
-
+  return (
+    <div>
+      <CssBaseline />
+      {/* CARDS GRID */}
+      <Container maxWidth="md">
+        <Grid container spacing={4} justifyContent="center">
+          {posts.map((post) => (
+            <Post post={post} />
+          ))}
+        </Grid>
+      </Container>
+    </div>
+  );
+};
 
 export default PostSection;

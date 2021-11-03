@@ -58,10 +58,11 @@ function App() { // maybe change to arrow function
 
           {/* Posts */}
           <Route exact path='/posts' component={PostSection}/>
+          <Route exact path='/posts/create' component={CreatePost}/> 
           <Route exact path='/posts/:id' component={SinglePostPage}/> 
           <Route exact path='/posts/update/:id' component={EditPost}/>
           <Route exact path='/posts/search/:value' component={Search}/>
-          <Route exact path='/posts/create/new' component={CreatePost}/> 
+          {/* <Route exact path='/posts/create/new' component={CreatePost}/>  */}
 
       </UserAuth.Provider>
       <Footer/>
