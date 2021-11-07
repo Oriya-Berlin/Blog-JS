@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const connection = require('./../mySQLconnection');
+
 
 require("dotenv").config();
+
 
 
 
@@ -12,90 +14,122 @@ require("dotenv").config();
 // Register
 router.post('/user/register', async (req,res) => {
 
-    // check if email already exsits
-    const emailExist = await User.findOne({email: req.body.email});
-    if(emailExist)
-        return res.status(400).send("This email already exists!");
+    let username = req.body.username;
+    let email = req.body.email;
+    let password = req.body.password;
+    let fname = req.body.fname;
+    let lname = req.body.lname;
+    let image = req.body.image;
 
+    // EMAIL and USERNAME are unique
 
-    // check if username exist
-    const usernameExist = await User.findOne({username: req.body.username});
-    if(usernameExist)
-        return res.status(400).send("This username already exists!");
+    const emailValidationCMD = `SELECT email FROM users WHERE email = "${email}"`;
+    await connection.query(emailValidationCMD, (err,data) => {
 
+        if(err)
+            console.log(err);
+    
+        if(data.length > 0)
+            return res.send("This email already in use.");
+
+        });
+
+    const usernameValidationCMD = `SELECT username FROM users WHERE username = "${username}"`;
+    await connection.query(usernameValidationCMD, (err,data) => {
+            
+        if(err)
+            console.log(err);
+        
+        if(data.length > 0)
+            return res.send("This username already in use.");
+    
+        });
 
 
     // encrypt password
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
 
-    const user = new User({
-            username: req.body.username,
-            email: req.body.email,
-            password: hashedPassword,
-            fname: req.body.fname,
-            lname: req.body.lname,
-            image: req.body.image
-        });
+    const insertCMD = `INSERT INTO users (username,email,password,fname,lname,image)
+     VALUES ("${username}","${email}","${hashedPassword}","${fname}","${lname}","${image}") `;
 
+    await connection.query(insertCMD, (err,data) => {
 
-    try {
-        await user.save(); 
-        res.send('New user has been registered!');
-    } 
-    catch (error) {
-        res.status(400).send(error);
-        console.log(error); 
-    }
-
-});
+        if(err)
+            console.log(err);
+            
+        res.send("New user has been registered!");
+    });
+})
 
 
 
 // Login
 router.post('/user/login', async (req,res) => {
 
-    // check if user exsits 
-    const user = await User.findOne({email: req.body.email});
+    let email = req.body.email;
+    let username = req.body.username;
+    let password = req.body.password;
 
-    if(!user)
-        return res.status(400).send("Email is not exists!");
+    // TODO: make sure that you added some validation logic at the FE, like "",etc
 
-    // check the password
-    const passwordValidation = await bcrypt.compare(req.body.password, user.password);
+    const cmd = `SELECT * FROM users WHERE email = '${email}' OR username = "${username}" `;
+
+     await connection.query(cmd, async (err,data) => {
+
+        if(err)
+            console.log(err); 
         
+        console.log(data);
 
-    if(!passwordValidation)
-        return res.status(400).send('Invalid password!');    
-  
+        if(data.length == 0)
+            return res.send("Email/Username does not exists!");
+        
+        
+        if(data.length == 1)
+        {
+            // check the password
+            const passwordValidation = await bcrypt.compare(password, data[0].password);
 
-    const userDetails = {
-        id:user._id,
-        username: user.username,
-        email: user.email
-        };
+            if(!passwordValidation)
+                return res.status(400).send('Invalid password!');
+            
+            const userDetails = {
+                username: data[0].username,
+                email: data[0].email,
+                fname: data[0].fname,
+                lname: data[0].lname,
+                image: data[0].image
+            };
+            
+            const token = jwt.sign({username: data[0].username}, process.env.TOKEN, { expiresIn: '60s'});
+            res.header('auth-token', token).json({user: userDetails, token: token});    
+        }
+        
+        
+    });
 
-    const token = jwt.sign({user_id: user._id}, process.env.TOKEN, { expiresIn: '60s'});
-    res.header('auth-token', token).json({user: userDetails, token: token});
-
-});
+})
 
 
 
-// Get all users
-router.get('/user/users', (req,res) => {
+// GET all users
+router.get('/users', async (req,res) => {
 
-    User.find({})
-    .then(users => res.json(users))
-    .catch(err => res.status(400).json(`Error: ${err}`));
-});
+    await connection.query(`SELECT * FROM users`, (err,data) => {
+        if(err) throw err;
+        res.send(data);
+    });
+})
 
 
 
 // ---------------------------------------------------------------------------
+//                            NOT IN USE
+// ---------------------------------------------------------------------------
 
-// TODO: maybe we can put the verification on client side
+
 router.post('/user/token', (req, res) => {
     
     const token = req.body.token;
